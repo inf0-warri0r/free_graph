@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <math.h>
 #include <glib.h>
 
-#include "graph.h"
+#include "free_graph.h"
 
 graph *g;
 
@@ -41,17 +42,17 @@ void re_draw(double (*f)(double),
 		   double range_y_min,
 		   double range_y_max){
 
-	clear_grapheft(g);
+	clear_graph(g);
 	
 	double iter = (range_y_max - range_y_min)/20;
-	draw_graphid_y(g, range_y_min, range_y_max, iter, (char)0xAA);
+	draw_grid_y(g, range_y_min, range_y_max, iter, (char)0xAA);
 
 	iter = (range_x_max - range_x_min)/20;
-	draw_graphid_x(g, range_x_min, range_x_max,  iter, (char)0xAA);
+	draw_grid_x(g, range_x_min, range_x_max,  iter, (char)0xAA);
 	create_y(g, range_y_min, range_y_max, 0, (char)0x00);
 
 	create_x(g, range_x_min, range_x_max, 0, (char)0x00);
-	draw_grapheft(g, (*f), 
+	draw_graph(g, (*f), 
 			 range_x_min, range_x_max, range_y_min, range_y_max);
 
 	write_bitmap(g, "a.bmp");
@@ -121,7 +122,7 @@ void b6(){
 int main(int argc, char **argv){
 
 	g = init(1000, 500);
-	clear_grapheft(g);
+	clear_graph(g);
 	write_bitmap(g, "a.bmp");
 
 	GtkWidget *box_buttons;
