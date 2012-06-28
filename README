@@ -1,0 +1,51 @@
+free_graph - graph drawing library for c/c++ (linux)
+=====================================================
+
+using this library you can draw a graph of a equation in given x and y range and
+write it into a bitmap of given width and height.
+
+compiling source :
+------------------ 
+
+source of the library are include int he "src" directory. to create object code run,
+
+	gcc -Wall -c -fpic free_graph.c structs.h
+
+int he commend line. now to create the library files run,
+
+	gcc -Wall -shared -o libfree_graph.so free_graph.o structs.h
+
+then the "libfree_graph.so" file will be created.
+
+copy it to the "/usr/lib" directory.
+
+	sudo cp libfree_graph.so /usr/lib
+
+now copy "free_graph.h" file to "/usr/include" directory.
+
+	sudo cp free_graph.h /usr/include
+
+
+you can also use already compiled library file and header file in lib directory.
+copy the to the above directories.
+
+compiling demo :
+----------------
+
+you need gtk to compile "demo" . install it by running,
+
+	sudo apt-get install libgtk2.0-dev
+
+on terminal. then simply type make. double click on compiled file to run it
+
+using free_graph:
+-----------------
+
+use "fg_init" and "fg_clear_graph" before drwaing any thing (graph or grid or lines).
+try to use small x and y ranges to make the graph more accurate.
+
+more inf0:
+------------------
+
+	http://www.inf0warri0r.blogspot.com
+	tcg.galahena@gmail.com  
