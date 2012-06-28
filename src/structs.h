@@ -1,10 +1,18 @@
-typedef struct graph{
+/*
+*Author :Tharindra Galahena
+*Project:free_graph - graph drawing library for c/c++ (linux)
+*Date   :28/06/2012
+*/
+
+/*store bitmap data*/
+struct graph{
 	struct bmp_header *h;
 	int pixel_width;
 	int pixel_height;
 	char **pix;
 } graph;
 
+/*bitmap header information*/
 #pragma pack(push, 1)
 struct bmp_header {
     short BM;
