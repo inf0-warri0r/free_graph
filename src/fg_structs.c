@@ -1,9 +1,26 @@
-typedef struct graph{
+typedef struct fg_graph{
 	struct bmp_header *h;
 	int pixel_width;
 	int pixel_height;
 	char **pix;
-} graph;
+} fg_graph;
+
+typedef struct fg_area{
+	double x_min;
+	double x_max;
+	double y_min; 
+	double y_max; 
+} fg_area;
+
+typedef struct fg_point{
+	double x;
+	double y; 
+} fg_point;
+
+typedef struct fg_range{
+	double min;
+	double max;
+} fg_range;
 
 #pragma pack(push, 1)
 struct bmp_header {

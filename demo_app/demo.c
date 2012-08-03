@@ -11,9 +11,10 @@
 #include <math.h>
 #include <glib.h>
 
+#include <fg_structs.h>
 #include <free_graph.h>
 
-struct graph *g;
+fg_graph *g;
 
 GtkWidget *window_main;
 GtkWidget *box_main;
@@ -48,24 +49,39 @@ void re_draw(double (*f)(double),
 		   double range_y_min,
 		   double range_y_max){
 
+
+	fg_area out;
+	out.x_min = range_x_min;
+	out.x_max = range_x_max;
+	out.y_min = range_y_min;
+	out.y_max = range_y_max;
+
+	fg_range range_x;
+	range_x.min = range_x_min;
+	range_x.max = range_x_max;
+	
+	fg_range range_y;
+	range_y.min = range_y_min;
+	range_y.max = range_y_max;
+	
 	/*clear the graph using while as background*/
 	fg_clear_graph(g, (char)0xFF);
 	
 	/*draw grid in graph using gray color*/
 	double iter = (range_y_max - range_y_min)/20;
-	fg_draw_grid_y(g, range_y_min, range_y_max, iter, (char)0xAA);
+	fg_draw_grid_y(g, &range_y, iter, (char)0xAA);
 	iter = (range_x_max - range_x_min)/20;
-	fg_draw_grid_x(g, range_x_min, range_x_max,  iter, (char)0xAA);
+	fg_draw_grid_x(g, &range_x,  iter, (char)0xAA);
 
 	/*craete X axes using black color*/ 
-	fg_create_y(g, range_y_min, range_y_max, 0, (char)0x00);
+	fg_create_y(g, &range_y, 0, (char)0x00);
 
 	/*craete Y axes using black color*/ 
-	fg_create_x(g, range_x_min, range_x_max, 0, (char)0x00);
+	fg_create_x(g, &range_x, 0, (char)0x00);
 
 	/*draw graph using black color*/ 
 	fg_draw_graph(g, (*f), 
-			 range_x_min, range_x_max, range_y_min, range_y_max, (char)0x00);
+			 &out, (char)0x00);
 	fg_write_bitmap(g, "a.bmp");
 }
 void b1(){
