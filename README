@@ -9,11 +9,11 @@ compiling source :
 
 source of the library are include int he "src" directory. to create object code run,
 
-	gcc -Wall -c -fpic free_graph.c structs.h
+	gcc -Wall -c -fpic free_graph.c fg_error.c structs.h
 
 int he commend line. now to create the library files run,
 
-	gcc -Wall -shared -o libfree_graph.so free_graph.o structs.h
+	gcc -Wall -shared -o libfree_graph.so free_graph.o fg_error.o structs.h
 
 then the "libfree_graph.so" file will be created.
 
@@ -21,9 +21,11 @@ copy it to the "/usr/lib" directory.
 
 	sudo cp libfree_graph.so /usr/lib
 
-now copy "free_graph.h" file to "/usr/include" directory.
+now copy "free_graph.h", "fg_structs.h" and "fg_error.h" files to "/usr/include" directory.
 
 	sudo cp free_graph.h /usr/include
+	sudo cp fg_structs.h /usr/include
+	sudo cp fg_error.h /usr/include
 
 
 you can also use already compiled library file and header file in lib directory.

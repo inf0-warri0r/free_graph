@@ -12,6 +12,7 @@ typedef struct fg_graph{
 	char **pix;
 } fg_graph;
 
+/*area/boundries of the graph or portion of the graph*/
 typedef struct fg_area{
 	double x_min;
 	double x_max;
@@ -19,11 +20,13 @@ typedef struct fg_area{
 	double y_max; 
 } fg_area;
 
+/*cordinations of a point on the graph*/
 typedef struct fg_point{
 	double x;
 	double y; 
 } fg_point;
 
+/*X or Y value range*/
 typedef struct fg_range{
 	double min;
 	double max;

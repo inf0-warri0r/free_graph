@@ -1,103 +1,96 @@
 /*
 *Author :Tharindra Galahena
-*Project:free_graph - graph drawing library for c/c++ (linux)
+*Project:free_fg_graph - fg_graph drawing library for c/c++ (linux)
 *Date   :28/06/2012
 */
 
 #ifndef free_graph_h__
 #define free_graph_h__
 
-/*store bitmap data*/
-struct graph{
-	struct bmp_header *h;
-	int pixel_width;
-	int pixel_height;
-	char **pix;
-};
-/*get the scale of the graph*/
+/*get the scale of the fg_graph*/
 extern double fg_get_scale(int a, double max, double min);
 
 /*create a line parelel to Y axes*/
-extern int fg_create_y(struct graph *g, 
-				double range_y_min, //minimum y value in the graph
-				double range_y_max, //maximum y value in the graph
-				double y, 		// y value of the line
+extern int fg_create_y(fg_graph *g, 
+				fg_range *range_y,  // y value range in the fg_graph
+				double y, 			// y value of the line
 				char color); 		// char which has value between 0x00 to 0xFF
 
 /*create a line parelel to Y axes smaller than leanth ofthe greaf*/
-extern int fg_create_y_2(struct graph *g, 
-				double range_x_min, //minimum x value in the graph
-				double range_x_max, //maximum x value in the graph
-				double range_y_min, //minimum y value in the graph
-				double range_y_max, //maximum y value in the graph
-				double x_min, 		//minimum x value of the line (start)
-				double x_max, 		//minimum x value of the line (end)
-				double y, 		// y value of the line
+extern int fg_create_y_2(fg_graph *g, 
+				fg_area  *out, 		//area/boundries of the fg_graph
+				fg_range *range_x,	// x value range of the line
+				double y, 			// y value of the line
 				char color);		// char which has value between 0x00 to 0xFF
 
 /*create a line parelel to X axes*/
-extern int fg_create_x(struct graph *g, 
-				double range_x_min, //minimum x value in the graph
-				double range_x_max, //maximum x value in the graph
-				double x, 		// y value of the line
+extern int fg_create_x(fg_graph *g, 
+				fg_range *range_x, // x value range of the fg_graph
+				double x, 		   // x value of the line
+				char color);	   // char which has value between 0x00 to 0xFF
+
+/*create a line parelel to X axes smaller than leanth ofthe graph*/
+extern int fg_create_x_2(fg_graph *g, 
+				fg_area  *out, 		//area/boundries of the fg_graph
+				fg_range *range_y,	// y value range of the line
+				double x, 			// x value of the line
 				char color);		// char which has value between 0x00 to 0xFF
 
-/*create a line parelel to X axes smaller than leanth ofthe greaf*/
-extern int fg_create_x_2(struct graph *g, 
-				double range_x_min, //minimum x value in the graph
-				double range_x_max, //maximum x value in the graph
-				double range_y_min, //minimum y value in the graph
-				double range_y_max, //maximum y value in the graph
-				double y_min, 		//minimum y value of the line (start)
-				double y_max, 		//minimum y value of the line (end)
-				double x, 		// y value of the line
-				char color);		// char which has value between 0x00 to 0xFF
-
-/*write the graph to the bitmap*/
-extern void fg_write_bitmap(struct graph *g, 
+/*write the fg_graph to the bitmap*/
+extern int fg_write_bitmap(fg_graph *g, 
 					char *name); 	//name of the bitmap
 
-/*draw set of horizontel lines in the graph*/ 
-extern void fg_draw_grid_y(struct graph *g, 
-			double range_y_min, //minimum y value in the graph
-			double range_y_max, //maximum y value in the graph
-			double iter, 		//gap between two lines 
+/*draw set of horizontel lines in the fg_graph*/ 
+extern int fg_draw_grid_y(fg_graph *g, 
+			fg_range *range_y,  // y value range in the fg_graph
+			double iter, 		// gap between two lines 
 			char color);		// char which has value between 0x00 to 0xFF
 
-/*draw set of vertical lines in the graph*/ 
-extern void fg_draw_grid_x(struct graph *g, 
-			double range_x_min, //minimum x value in the graph
-			double range_x_max, //maximum x value in the graph
-			double iter,		//gap between two lines 
+/*draw set of vertical lines in the fg_graph*/ 
+extern int fg_draw_grid_x(fg_graph *g, 
+			fg_range *range_x,  // x value range in the fg_graph
+			double iter,		// gap between two lines 
 			char color);		// char which has value between 0x00 to 0xFF
 
-/*clear the graph*/
-extern void fg_clear_graph(struct graph *g,
+/*clear the fg_graph*/
+extern void fg_clear_graph(fg_graph *g,
 			char color);		//char which has value between 0x00 to 0xFF(background)
 
-/*draw the graph of an equation*/
-extern void fg_draw_graph(struct graph *g,
+/*draw the fg_graph of an equation*/
+extern int fg_draw_graph(fg_graph *g,
 			double (*f)(double),//function containing the equation
-			double range_x_min, //minimum x value in the graph
-			double range_x_max, //maximum x value in the graph
-			double range_y_min, //minimum y value in the graph
-			double range_y_max, //maximum y value in the graph
+			fg_area *out,	    //area/boundries of the fg_graph
 			char color);		// char which has value between 0x00 to 0xFF
 
-/*draw the graph of an equation between given x and y values*/
-extern void fg_draw_graph_2(struct graph *g,
+/*draw the fg_graph of an equation between given x and y values*/
+extern int fg_draw_graph_2(struct fg_graph *g,
 			double (*f)(double),//function containing the equation
-			double range_x_min, //minimum x value in the graph
-			double range_x_max, //maximum x value in the graph
-			double range_y_min, //minimum y value in the graph
-			double range_y_max, //maximum y value in the graph
-			double range_X_min, //minimum x value in the whole graph
-			double range_X_max, //maximum x value in the whole graph
-			double range_Y_min, //minimum y value in the whole graph
-			double range_Y_max, //maximum y value in the whole graph
+			fg_area *out,		//area/boundries of the fg_graph
+			fg_area *in,		//given boundies inside whole fg_graph 
 			char color);		// char which has value between 0x00 to 0xFF
+			
+/*draw a line between two points*/
+extern int fg_draw_line(fg_graph *g,
+			 fg_area *out,		//area/boundries of the fg_graph
+			 fg_point *p1,		//point 1
+			 fg_point *p2,		//point 2
+			 char color);		// char which has value between 0x00 to 0xFF
 
+/*mark a point in fg_graph*/
+extern int fg_draw_point(fg_graph *g,
+			 fg_area *out,		//area/boundries of the fg_graph
+			 fg_point *p,		//point to mark
+			 char color);		// char which has value between 0x00 to 0xFF
+	
+/*draw a fg_graph with given list of points*/		 
+extern int fg_draw_graph_3(fg_graph *g,
+			 fg_area *out,		//area/boundries of the fg_graph
+			 double *x_axe,		//x point list
+			 double *y_axe,		//y point list
+			 int x_len,			//lenth of x point list
+			 int y_len,			//length of y point list
+			 char color);		// char which has value between 0x00 to 0xFF
 /*initialice data*/
-extern struct graph *fg_init(int x, int y); /*width and height of the bitmap in pixels */
+extern fg_graph *fg_init(int x, int y); /*width and height of the bitmap in pixels */
 
 #endif 

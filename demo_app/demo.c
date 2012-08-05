@@ -26,13 +26,16 @@ GtkWidget* text_y_min;
 
 
 double func1(double x){	
-	return (x - 1)*(x - 2)*(x - 3)*(x - 4);
+	//return (x - 1)*(x - 2)*(x - 3)*(x - 4);
+	return x*x*x*x*exp(x - 1);
 }
 double func2(double x){	
-	return x*x*x + 3*x*x + 4;
+	//return x*x*x + 3*x*x + 4;
+	return x*x*exp(x - 1);
 }
 double func3(double x){
-	return sin(x*3.14/180.0);
+	//return sin(x*3.14/180.0);
+	return x*exp(x - 1);
 }
 double func4(double x){
 	return log(x);

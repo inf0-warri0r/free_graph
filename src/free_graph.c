@@ -1,6 +1,6 @@
 /*
 *Author :Tharindra Galahena
-*Project:free_fg_graph - fg_graph drawing library for c/c++ (linux)
+*Project:free_fg_graph - 2D graph drawing library for c/c++ (linux)
 *Date   :28/06/2012
 */
 
@@ -37,7 +37,7 @@ struct bmp_header * fg_fill_header(int pixel_width, int pixel_height){
     return header;
 }
 /*create a line parelel to X axes*/
-int fg_create_y(struct fg_graph *g, 
+int fg_create_y(fg_graph *g, 
 			fg_range *range_y, 
 			double y, 
 			char color){ 
@@ -45,8 +45,9 @@ int fg_create_y(struct fg_graph *g,
 	double range_y_max = range_y -> max;
 	double range_y_min = range_y -> min;
 	
-	if(range_y_max < y || range_y_min > y) return 0;
-	if(range_y_max - range_y_min <= 0) return 0;
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_y_max < y || range_y_min > y) return -1;
+	
 	char **pix = g -> pix;
 	double scale = fg_get_scale(g -> pixel_height, range_y_max, range_y_min);
 	int Y = (int)(y*scale - range_y_min*scale);
@@ -57,7 +58,7 @@ int fg_create_y(struct fg_graph *g,
 	return 1;
 }
 /*create a line parelel to X axes smaller than leanth ofthe greaf*/
-int fg_create_y_2(struct fg_graph *g, 
+int fg_create_y_2(fg_graph *g, 
 			fg_area  *out,
 			fg_range *range_x,
 			double y, 
@@ -70,9 +71,12 @@ int fg_create_y_2(struct fg_graph *g,
 
 	double x_min = range_x -> min; 
 	double x_max = range_x -> max;
-			
-	if(range_y_max < y || range_y_min > y) return 0;
-	if(range_y_max - range_y_min <= 0 || range_x_max - range_x_min <= 0 || x_max - x_min <= 0) return 0;
+	
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_x_max - range_x_min <= 0) return -2;
+	if(x_max - x_min <= 0) return -4;		
+	if(range_y_max < y || range_y_min > y) return -1;
+	
 	char **pix = g -> pix;
 	double scale_y = fg_get_scale(g -> pixel_height, range_y_max, range_y_min);
 	double scale_x = fg_get_scale(g -> pixel_width, range_x_max, range_x_min);
@@ -85,7 +89,7 @@ int fg_create_y_2(struct fg_graph *g,
 	return 1;
 }
 /*create a line parelel to Y axes*/
-int fg_create_x(struct fg_graph *g, 
+int fg_create_x(fg_graph *g, 
 			fg_range *range_x, 
 			double x, 
 			char color){ 
@@ -93,8 +97,9 @@ int fg_create_x(struct fg_graph *g,
 	double range_x_max = range_x -> max;
 	double range_x_min = range_x -> min;
 	
+	if(range_x_max - range_x_min <= 0) return -2;
 	if(range_x_max < x || range_x_min > x) return 0;
-	if(range_x_max - range_x_min <= 0) return 0;
+	
 	char **pix = g -> pix;
 	double scale = fg_get_scale(g -> pixel_width, range_x_max, range_x_min);
 	int X = (int)(x*scale - range_x_min*scale);
@@ -105,7 +110,7 @@ int fg_create_x(struct fg_graph *g,
 	return 1;
 }
 /*create a line parelel to Y axes smaller than leanth ofthe greaf*/
-int fg_create_x_2(struct fg_graph *g, 
+int fg_create_x_2(fg_graph *g, 
 			fg_area *out,
 			fg_range *range_y,
 			double x, 
@@ -119,8 +124,11 @@ int fg_create_x_2(struct fg_graph *g,
 	double y_min = range_y -> min; 
 	double y_max = range_y -> max;
 	
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_x_max - range_x_min <= 0) return -2;
+	if(y_max - y_min <= 0) return -5;
 	if(range_x_max < x || range_x_min > x) return 0;
-	if(range_y_max - range_y_min <= 0 || range_x_max - range_x_min <= 0 || y_max - y_min <= 0) return 0;
+	
 	char **pix = g -> pix;
 	double scale_y = fg_get_scale(g -> pixel_height, range_y_max, range_y_min);
 	double scale_x = fg_get_scale(g -> pixel_width, range_x_max, range_x_min);
@@ -133,10 +141,12 @@ int fg_create_x_2(struct fg_graph *g,
 	return 1;
 }
 /*write the fg_graph to the bitmap*/
-void fg_write_bitmap(struct fg_graph *g, char *name){
+int fg_write_bitmap(fg_graph *g, char *name){
 	char **pix = g -> pix;
 
 	FILE *fp = fopen(name, "w");
+	if(fp == NULL) return -8;
+	
 	fwrite ((char*)(g -> h), sizeof(struct bmp_header), 1, fp);
 	fwrite (&pix[0][0], 1, 1, fp);
 	int i, j, k;
@@ -154,9 +164,10 @@ void fg_write_bitmap(struct fg_graph *g, char *name){
 		}	
 	}
 	fclose(fp);
+	return 1;
 }
 /*draw set of horizontel lines in the fg_graph*/ 
-void fg_draw_grid_y(struct fg_graph *g,
+int fg_draw_grid_y(fg_graph *g,
 			 fg_range *range_y,
 			 double iter,
 			 char color){
@@ -164,20 +175,23 @@ void fg_draw_grid_y(struct fg_graph *g,
 	double range_y_max = range_y -> max;
 	double range_y_min = range_y -> min;
 	
-	if(range_y_max - range_y_min <= 0) return;
+	if(range_y_max - range_y_min <= 0) return -3;
 	double i = 0;
+	if(range_y_min > i) i = range_y_min;
 	while(i < range_y_max){
 		fg_create_y(g, range_y, i, color);
 		i += iter;
 	}
 	i = 0;
-	while(i > range_y_min){
-		fg_create_y(g, range_y, i, color);
-		i -= iter;
-	}
+	if(range_y_min < i)
+		while(i > range_y_min){
+			fg_create_y(g, range_y, i, color);
+			i -= iter;
+		}
+	return 1;
 }
 /*draw set of vertical lines in the fg_graph*/ 
-void fg_draw_grid_x(struct fg_graph *g,
+int fg_draw_grid_x(fg_graph *g,
 			 fg_range *range_x,
 			 double iter,
 			 char color){
@@ -185,20 +199,23 @@ void fg_draw_grid_x(struct fg_graph *g,
 	double range_x_max = range_x -> max;
 	double range_x_min = range_x -> min;
 	
-	if(range_x_max - range_x_min <= 0) return;
+	if(range_x_max - range_x_min <= 0) return -2;
 	double i = 0;
+	if(range_x_min > i) i = range_x_min;
 	while(i < range_x_max){
 		fg_create_x(g, range_x, i, color);
 		i += iter;
 	}
 	i = 0;
-	while(i > range_x_min){
-		fg_create_x(g, range_x, i, color);
-		i -= iter;
-	}
+	if(range_x_min < i)
+		while(i > range_x_min){
+			fg_create_x(g, range_x, i, color);
+			i -= iter;
+		}
+	return 1;
 }
 /*clear the fg_graph*/
-void fg_clear_graph(struct fg_graph *g, char color){
+void fg_clear_graph(fg_graph *g, char color){
 	char **pix = g -> pix;
 	int i, j;
 	for(i = 0; i < g -> pixel_height; i++){
@@ -208,7 +225,7 @@ void fg_clear_graph(struct fg_graph *g, char color){
 	}
 }
 /*draw the fg_graph of an equation*/
-void fg_draw_graph(struct fg_graph *g,
+int fg_draw_graph(fg_graph *g,
 			 double (*f)(double),
 			 fg_area *out,
 			 char color){
@@ -218,7 +235,8 @@ void fg_draw_graph(struct fg_graph *g,
 	double range_y_min = out -> y_min;
 	double range_y_max = out -> y_max;
 
-	if(range_y_max - range_y_min <= 0 || range_x_max - range_x_min <= 0 ) return;
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_x_max - range_x_min <= 0) return -2;
 
 	double x_scale = fg_get_scale(g -> pixel_width, range_x_max, range_x_min);
 	double y_scale = fg_get_scale(g -> pixel_height, range_y_max, range_y_min);
@@ -239,14 +257,15 @@ void fg_draw_graph(struct fg_graph *g,
 			l = MIN_Y(Y, Y_old);
 			if(h - l < 3 * (g -> pixel_height) / 4)
 				for(j = l; j <= h; j++)
-					if(j > 0 && j < g ->pixel_height) 
+					if(j > 0 && j < g -> pixel_height) 
 						pix[j][i - (int)(range_x_min*x_scale)] = color;
 		}else start++;
 		Y_old = Y;
 	}
+	return 1;
 }
 /*draw the fg_graph of an equation between given x and y values*/
-void fg_draw_graph_2(struct fg_graph *g,
+int fg_draw_graph_2(fg_graph *g,
 			 double (*f)(double),
 			 fg_area *out,
 			 fg_area *in,
@@ -262,12 +281,13 @@ void fg_draw_graph_2(struct fg_graph *g,
 	double range_Y_min =  in -> y_min;
 	double range_Y_max =  in -> y_max;
 
-	if(range_y_max - range_y_min <= 0 || range_x_max - range_x_min <= 0 ) return;
-	if(range_x_min > range_X_min ) range_X_min = range_x_min;
-	if(range_x_max < range_X_max ) range_X_max = range_x_max;
-	if(range_y_min > range_Y_min ) range_Y_min = range_y_min;
-	if(range_y_max < range_Y_max ) range_Y_max = range_y_max;
-
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_x_max - range_x_min <= 0) return -2;
+	if(range_x_min > range_X_min || range_x_max < range_X_max) return -6;
+	if(range_y_min > range_Y_min || range_y_max < range_Y_max) return -7;
+	if(range_Y_max - range_Y_min <= 0) return -5;
+	if(range_X_max - range_X_min <= 0) return -4;
+	
 	double X_scale = fg_get_scale(g -> pixel_width, range_x_max, range_x_min);
 	double Y_scale = fg_get_scale(g -> pixel_height, range_y_max, range_y_min);
 	char **pix = g -> pix;
@@ -298,8 +318,9 @@ void fg_draw_graph_2(struct fg_graph *g,
 		}
 		Y_old = Y;
 	}
+	return 1;
 }
-void fg_draw_line(struct fg_graph *g,
+int fg_draw_line(fg_graph *g,
 			 fg_area *out,
 			 fg_point *p1,
 			 fg_point *p2,
@@ -309,6 +330,13 @@ void fg_draw_line(struct fg_graph *g,
 	double range_x_max = out -> x_max;
 	double range_y_min = out -> y_min;
 	double range_y_max = out -> y_max;
+	
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_x_max - range_x_min <= 0) return -2;
+	if(range_x_min > p1 -> x || range_x_max < p1 -> x) return -9;
+	if(range_y_min > p1 -> y || range_y_max < p1 -> y) return -9;
+	if(range_x_min > p2 -> x || range_x_max < p2 -> x) return -9;
+	if(range_y_min > p2 -> y || range_y_max < p2 -> y) return -9;
 	
 	double range_X_min;
 	double range_Y_min;
@@ -326,13 +354,7 @@ void fg_draw_line(struct fg_graph *g,
 		range_X_max =  p1 -> x;
 		range_Y_max =  p1 -> y;
 	}
-
-	if(range_x_max - range_x_min <= 0 ) return;
-	if(range_x_min > range_X_min ) range_X_min = range_x_min;
-	if(range_x_max < range_X_max ) range_X_max = range_x_max;
-	if(range_y_min > range_Y_min ) range_Y_min = range_y_min;
-	if(range_y_max < range_Y_max ) range_Y_max = range_y_max;
-
+	
 	double X_scale = fg_get_scale(g -> pixel_width, range_x_max, range_x_min);
 	double Y_scale = fg_get_scale(g -> pixel_height, range_y_max, range_y_min);
 	char **pix = g -> pix;
@@ -342,7 +364,6 @@ void fg_draw_line(struct fg_graph *g,
 	int i, j;
 	if(range_X_max != range_X_min){
 		double m = (range_Y_max - range_Y_min)/(range_X_max - range_X_min);
-		printf("%f %f m = %f\n", X_scale, range_Y_max, m);
 		for(i = range_X_min*X_scale; i < range_X_max*X_scale; i++){
 			
 			double x = (double)i/X_scale;
@@ -350,19 +371,19 @@ void fg_draw_line(struct fg_graph *g,
 			y = m*x - m*range_X_min + range_Y_min;		
 			
 			int Y = (int) (y*Y_scale) - range_y_min*Y_scale;
-			if(m == -29) printf("%f %d\n", x, Y);
 			if(i > range_x_min*X_scale && i < range_x_max*X_scale){
 				if(start){
 					int h, l;
 					h = MAX_Y(Y, Y_old);
 					l = MIN_Y(Y, Y_old);
-					if(m == -15) printf("x\n");
-					//if(h - l < 4 * (g ->  pixel_height) / 4)
-						for(j = l; j <= h; j++)
-							if(j < g -> pixel_height && i - (int)(range_x_min*X_scale) < g -> pixel_width){ 
+					for(j = l; j <= h; j++){
+						if(j < g -> pixel_height 
+						   && i - (int)(range_x_min*X_scale) < g -> pixel_width){ 
+							if(j >= 0 && i - (int)(range_x_min*X_scale) >= 0){ 
 								pix[j][i - (int)(range_x_min*X_scale)] = color;
-								if(m == -15) printf("xxx\n");
 							}
+						}
+					}
 				}else start++;
 			}
 			Y_old = Y;
@@ -374,8 +395,9 @@ void fg_draw_line(struct fg_graph *g,
 		
 		fg_create_x_2(g, out, &range_y, range_X_min, color);  
 	}
+	return 1;
 }
-void fg_draw_point(struct fg_graph *g,
+int fg_draw_point(fg_graph *g,
 			 fg_area *out,
 			 fg_point *p,
 			 char color){
@@ -385,7 +407,11 @@ void fg_draw_point(struct fg_graph *g,
 	double range_y_min = out -> y_min;
 	double range_y_max = out -> y_max;
 
-	if(range_y_max - range_y_min <= 0 || range_x_max - range_x_min <= 0 ) return;
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_x_max - range_x_min <= 0) return -2;
+	if(range_x_min > p -> x || range_x_max < p -> x) return -9;
+	if(range_y_min > p -> y || range_y_max < p -> y) return -9;
+	
 	double x_scale = fg_get_scale(g -> pixel_width, range_x_max, range_x_min);
 	double y_scale = fg_get_scale(g -> pixel_height, range_y_max, range_y_min);
 	char **pix = g -> pix;
@@ -398,18 +424,30 @@ void fg_draw_point(struct fg_graph *g,
 			if(j > 0 && j < g ->pixel_height) 
 				pix[j][k] = color;
 					
-	
+	return 1;
 }
-void fg_draw_graph_3(struct fg_graph *g,
+int fg_draw_graph_3(fg_graph *g,
 			 fg_area *out,
 			 double *x_axe,
 			 double *y_axe,
-			 int x_len,
-			 int y_len,
+			 int from,
+			 int to,
 			 char color){
 
+	double range_x_min = out -> x_min;
+	double range_x_max = out -> x_max;
+	double range_y_min = out -> y_min;
+	double range_y_max = out -> y_max;
+
+	if(range_y_max - range_y_min <= 0) return -3;
+	if(range_x_max - range_x_min <= 0) return -2;
 	int i;
-	for(i = 0; i < x_len - 1; i++){
+	for(i = from; i < to; i++){
+
+		if(range_x_min > x_axe[i] || range_x_max < x_axe[i]) return -10;
+		if(range_y_min > y_axe[i] || range_y_max < y_axe[i]) return -10;
+		if(range_x_min > x_axe[i + 1] || range_x_max < x_axe[i + 1]) return -10;
+		if(range_y_min > y_axe[i + 1] || range_y_max < y_axe[i + 1]) return -10;
 
 		fg_point p1;
 		p1.x = x_axe[i];
@@ -424,10 +462,11 @@ void fg_draw_graph_3(struct fg_graph *g,
 		fg_draw_point(g, out, &p1, color);
 		fg_draw_point(g, out, &p2, color);
 	}
+	return 1;
 }
 /*initialice data*/
-struct fg_graph *fg_init(int x, int y){
-	struct fg_graph *g = (struct fg_graph *)malloc(sizeof(struct fg_graph));
+fg_graph *fg_init(int x, int y){
+	struct fg_graph *g = (fg_graph *)malloc(sizeof(fg_graph));
 	g -> pixel_width = x / 2;
 	g -> pixel_height = y / 2;
 
