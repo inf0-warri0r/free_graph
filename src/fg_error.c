@@ -23,16 +23,15 @@ char *fg_error_codes[] = {
 	"array index out of range"
 };
 
+/*return the error message of the code */
 char *fg_error(int errnum){
-	if(errnum < 0) errnum = -1 * errnum;
-	//if (errnum < SND_ERROR_BEGIN) return (char *) strerror(errnum);
-	//errnum -= SND_ERROR_BEGIN;
+	if(errnum <= 0) errnum = -1 * errnum;
+	else return NULL;
 	if (errnum >= sizeof(fg_error_codes) / sizeof(char *)) return "Unknown error";
 	return fg_error_codes[errnum];
 }
-
+/*print a error massage for error code*/
 void fg_perror(const char *message, int errnum){
-
 		char *error = fg_error(errnum);
-		fprintf(stderr, "%s : %s", message, error);
+		if(error != NULL) fprintf(stderr, "%s : %s", message, error);
 }

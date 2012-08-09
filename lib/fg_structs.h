@@ -4,14 +4,22 @@
 *Date   :28/06/2012
 */
 
+/*store r, g, b values of a colour*/
+typedef struct fg_color{
+	char G;
+	char R;
+	char B;
+} fg_color;
+
 /*store bitmap data*/
 typedef struct fg_graph{
 	struct bmp_header *h;
 	int pixel_width;
 	int pixel_height;
-	char **pix;
+	fg_color **pix;
 } fg_graph;
 
+/*area/boundries of the graph or portion of the graph*/
 typedef struct fg_area{
 	double x_min;
 	double x_max;
@@ -19,11 +27,13 @@ typedef struct fg_area{
 	double y_max; 
 } fg_area;
 
+/*cordinations of a point on the graph*/
 typedef struct fg_point{
 	double x;
 	double y; 
 } fg_point;
 
+/*X or Y value range*/
 typedef struct fg_range{
 	double min;
 	double max;

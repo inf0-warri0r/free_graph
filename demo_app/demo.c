@@ -11,6 +11,7 @@
 #include <math.h>
 #include <glib.h>
 
+#include <fg_error.h>
 #include <fg_structs.h>
 #include <free_graph.h>
 
@@ -26,16 +27,13 @@ GtkWidget* text_y_min;
 
 
 double func1(double x){	
-	//return (x - 1)*(x - 2)*(x - 3)*(x - 4);
-	return x*x*x*x*exp(x - 1);
+	return (x - 1)*(x - 2)*(x - 3)*(x - 4);
 }
 double func2(double x){	
-	//return x*x*x + 3*x*x + 4;
-	return x*x*exp(x - 1);
+	return x*x*x + 3*x*x + 4;
 }
 double func3(double x){
-	//return sin(x*3.14/180.0);
-	return x*exp(x - 1);
+	return sin(x*3.14/180.0);
 }
 double func4(double x){
 	return log(x);
@@ -59,6 +57,12 @@ void re_draw(double (*f)(double),
 	out.y_min = range_y_min;
 	out.y_max = range_y_max;
 
+	fg_area in;
+	in.x_min = range_x_min + (1.0/3.0) * (range_x_max - range_x_min);
+	in.x_max = range_x_max - (1.0/3.0) * (range_x_max - range_x_min);
+	in.y_min = range_y_min + (1.0/3.0) * (range_y_max - range_y_min);
+	in.y_max = range_y_max - (1.0/3.0) * (range_y_max - range_y_min);
+	
 	fg_range range_x;
 	range_x.min = range_x_min;
 	range_x.max = range_x_max;
@@ -67,24 +71,51 @@ void re_draw(double (*f)(double),
 	range_y.min = range_y_min;
 	range_y.max = range_y_max;
 	
+	/*white colour*/
+	fg_color c_a;
+	c_a.R = 0xFF;
+	c_a.B = 0xFF;
+	c_a.G = 0xFF;
+	
+	/*gray colour*/
+	fg_color c_b;
+	c_b.R = 0xAA;
+	c_b.B = 0xAA;
+	c_b.G = 0xAA;
+	
+	/*blue color*/
+	fg_color c_c;
+	c_c.R = 0x00;
+	c_c.B = 0xFF;
+	c_c.G = 0x00;
+	
+	/*red colour*/
+	fg_color c_d;
+	c_d.R = 0xFF;
+	c_d.B = 0x00;
+	c_d.G = 0x00;
+	
 	/*clear the graph using while as background*/
-	fg_clear_graph(g, (char)0xFF);
+	fg_clear_graph(g, c_a);
 	
 	/*draw grid in graph using gray color*/
 	double iter = (range_y_max - range_y_min)/20;
-	fg_draw_grid_y(g, &range_y, iter, (char)0xAA);
+	fg_draw_grid_y(g, &range_y, iter, c_b);
 	iter = (range_x_max - range_x_min)/20;
-	fg_draw_grid_x(g, &range_x,  iter, (char)0xAA);
+	fg_draw_grid_x(g, &range_x,  iter, c_b);
 
 	/*craete X axes using black color*/ 
-	fg_create_y(g, &range_y, 0, (char)0x00);
+	fg_create_y(g, &range_y, 0, c_c);
 
 	/*craete Y axes using black color*/ 
-	fg_create_x(g, &range_x, 0, (char)0x00);
+	fg_create_x(g, &range_x, 0, c_c);
 
 	/*draw graph using black color*/ 
-	fg_draw_graph(g, (*f), 
-			 &out, (char)0x00);
+	int err;
+	if((err = fg_draw_graph(g, (*f), &out, c_c)) <= 0);
+		fg_perror("ERROR", err);
+	if((err = fg_draw_graph_2(g, (*f), &out, &in, c_d)) <= 0);
+		fg_perror("ERROR", err);
 	fg_write_bitmap(g, "a.bmp");
 }
 void b1(){
@@ -152,7 +183,11 @@ void b6(){
 int main(int argc, char **argv){
 
 	g = fg_init(1000, 500);
-	fg_clear_graph(g, (char)0xFF);
+	fg_color c_a;
+	c_a.R = 0xFF;
+	c_a.B = 0xFF;
+	c_a.G = 0xFF;
+	fg_clear_graph(g, c_a);
 	fg_write_bitmap(g, "a.bmp");
 
 	GtkWidget *box_buttons;
@@ -232,7 +267,6 @@ int main(int argc, char **argv){
 					GTK_SIGNAL_FUNC (b5), NULL);
 	gtk_box_pack_start (GTK_BOX (box_buttons), button_cos, TRUE, FALSE, 5);
 	gtk_widget_show (button_cos);
-	
 	
 	gtk_signal_connect (GTK_OBJECT (button_tan), "clicked",
 					GTK_SIGNAL_FUNC (b6), NULL);

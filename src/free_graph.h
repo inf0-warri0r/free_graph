@@ -14,27 +14,27 @@ extern double fg_get_scale(int a, double max, double min);
 extern int fg_create_y(fg_graph *g, 
 				fg_range *range_y,  // y value range in the fg_graph
 				double y, 			// y value of the line
-				char color); 		// char which has value between 0x00 to 0xFF
+				fg_color color); 	// the colour of the graph
 
 /*create a line parelel to Y axes smaller than leanth ofthe greaf*/
 extern int fg_create_y_2(fg_graph *g, 
 				fg_area  *out, 		//area/boundries of the fg_graph
 				fg_range *range_x,	// x value range of the line
 				double y, 			// y value of the line
-				char color);		// char which has value between 0x00 to 0xFF
+				fg_color color);	// the colour of the graph
 
 /*create a line parelel to X axes*/
 extern int fg_create_x(fg_graph *g, 
 				fg_range *range_x, // x value range of the fg_graph
 				double x, 		   // x value of the line
-				char color);	   // char which has value between 0x00 to 0xFF
+				fg_color color);   // the colour of the graph
 
 /*create a line parelel to X axes smaller than leanth ofthe graph*/
 extern int fg_create_x_2(fg_graph *g, 
 				fg_area  *out, 		//area/boundries of the fg_graph
 				fg_range *range_y,	// y value range of the line
 				double x, 			// x value of the line
-				char color);		// char which has value between 0x00 to 0xFF
+				fg_color color);	// the colour of the graph
 
 /*write the fg_graph to the bitmap*/
 extern int fg_write_bitmap(fg_graph *g, 
@@ -44,43 +44,43 @@ extern int fg_write_bitmap(fg_graph *g,
 extern int fg_draw_grid_y(fg_graph *g, 
 			fg_range *range_y,  // y value range in the fg_graph
 			double iter, 		// gap between two lines 
-			char color);		// char which has value between 0x00 to 0xFF
+			fg_color color);	// the colour of the graph
 
 /*draw set of vertical lines in the fg_graph*/ 
 extern int fg_draw_grid_x(fg_graph *g, 
 			fg_range *range_x,  // x value range in the fg_graph
 			double iter,		// gap between two lines 
-			char color);		// char which has value between 0x00 to 0xFF
+			fg_color color);	// the colour of the graph
 
 /*clear the fg_graph*/
 extern void fg_clear_graph(fg_graph *g,
-			char color);		//char which has value between 0x00 to 0xFF(background)
+			fg_color color);	// the colour of the background
 
 /*draw the fg_graph of an equation*/
 extern int fg_draw_graph(fg_graph *g,
 			double (*f)(double),//function containing the equation
 			fg_area *out,	    //area/boundries of the fg_graph
-			char color);		// char which has value between 0x00 to 0xFF
+			fg_color color);	// the colour of the graph
 
 /*draw the fg_graph of an equation between given x and y values*/
 extern int fg_draw_graph_2(struct fg_graph *g,
 			double (*f)(double),//function containing the equation
 			fg_area *out,		//area/boundries of the fg_graph
 			fg_area *in,		//given boundies inside whole fg_graph 
-			char color);		// char which has value between 0x00 to 0xFF
+			fg_color color);	// the colour of the graph
 			
 /*draw a line between two points*/
 extern int fg_draw_line(fg_graph *g,
 			 fg_area *out,		//area/boundries of the fg_graph
 			 fg_point *p1,		//point 1
 			 fg_point *p2,		//point 2
-			 char color);		// char which has value between 0x00 to 0xFF
+			 fg_color color);	// the colour of the graph
 
 /*mark a point in fg_graph*/
 extern int fg_draw_point(fg_graph *g,
 			 fg_area *out,		//area/boundries of the fg_graph
 			 fg_point *p,		//point to mark
-			 char color);		// char which has value between 0x00 to 0xFF
+			 fg_color color);	// the colour of the graph
 	
 /*draw a fg_graph with given list of points*/		 
 extern int fg_draw_graph_3(fg_graph *g,
@@ -89,7 +89,8 @@ extern int fg_draw_graph_3(fg_graph *g,
 			 double *y_axe,		//y point list
 			 int x_len,			//lenth of x point list
 			 int y_len,			//length of y point list
-			 char color);		// char which has value between 0x00 to 0xFF
+			 fg_color color);	// the colour of the graph
+			 
 /*initialice data*/
 extern fg_graph *fg_init(int x, int y); /*width and height of the bitmap in pixels */
 

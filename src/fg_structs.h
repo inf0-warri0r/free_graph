@@ -4,12 +4,19 @@
 *Date   :28/06/2012
 */
 
+/*store r, g, b values of a colour*/
+typedef struct fg_color{
+	char G;
+	char R;
+	char B;
+} fg_color;
+
 /*store bitmap data*/
 typedef struct fg_graph{
 	struct bmp_header *h;
 	int pixel_width;
 	int pixel_height;
-	char **pix;
+	fg_color **pix;
 } fg_graph;
 
 /*area/boundries of the graph or portion of the graph*/

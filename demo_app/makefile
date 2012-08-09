@@ -9,4 +9,4 @@ GTK_LIBS = $(shell pkg-config --libs gtk+-2.0)
 GTK_FLAGS = $(shell pkg-config --cflags gtk+-2.0)
 
 all:	
-	$(CC) -o demo $(FILES) $(FLAGS) $(GTK_LIBS) $(GTK_FLAGS) 
+	$(CC) -g -o demo $(FILES) $(FLAGS) $(GTK_LIBS) $(GTK_FLAGS) 
