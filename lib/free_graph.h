@@ -93,5 +93,5 @@ extern int fg_draw_graph_3(fg_graph *g,
 			 
 /*initialice data*/
 extern fg_graph *fg_init(int x, int y); /*width and height of the bitmap in pixels */
-
+extern void fg_free(fg_graph *g);
 #endif 

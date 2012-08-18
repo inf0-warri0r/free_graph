@@ -483,3 +483,7 @@ fg_graph *fg_init(int x, int y){
 
 	return g;
 }
+void fg_free(fg_graph *g){
+	free(g -> pix);
+	free(g);
+}
