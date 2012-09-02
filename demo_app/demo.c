@@ -1,7 +1,25 @@
 /*
-*Author :Tharindra Galahena
-*Project:free_graph - graph drawing library for c/c++ (linux) -demo app
-*Date   :28/06/2012
+* Author :Tharindra Galahena
+* Project:free_graph - fg_graph drawing library for c/c++ (linux) - demo app
+* Date   :28/06/2012
+*
+*
+* 
+* 
+*     Copyright 2012 Tharindra Galahena
+*
+* This file is part of free_graph.
+*
+* free_graph is free software: you can redistribute it and/or modify it under the terms of 
+* the GNU General Public License as published by the Free Software Foundation, either 
+* version 3 of the License, or any later version. free_graph is distributed in the hope 
+* that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+* Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along with free_graph. 
+* If not, see http://www.gnu.org/licenses/.
+* 
 */
 
 #include <gtk/gtk.h>
@@ -180,6 +198,10 @@ void b6(){
 	gtk_image_set_from_file(GTK_IMAGE(image_headder), "a.bmp");
 	gtk_widget_show(image_headder);
 }
+void close_all(){
+	fg_free(g);
+	exit(0);
+}
 int main(int argc, char **argv){
 
 	g = fg_init(1000, 500);
@@ -207,7 +229,8 @@ int main(int argc, char **argv){
 
 	gtk_init(&argc, &argv);
 	window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
+	g_signal_connect (window_main, "delete_event", G_CALLBACK (close_all), NULL);
+
 	box_main = gtk_vbox_new (FALSE, 0);
 	box_buttons = gtk_hbox_new (FALSE, 0);
 	box_text = gtk_hbox_new (FALSE, 0);	
